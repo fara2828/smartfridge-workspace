@@ -2,15 +2,18 @@ import React from 'react';
 import qs from 'querystring';
 import { WebView } from 'react-native-webview';
 import { View } from 'react-native';
-import { getData, storeUser } from '../asyncStorages/storage'
+import { getData, storeUser } from '../asyncStorages/storage';
 import { useDispatch } from 'react-redux';
 import Config from 'react-native-config';
 
-const REST_API_KEY = Config.REST_API_KEY;
+//console.log(Config);
+// const REST_API_KEY = Config.REST_API_KEY;
+// console.log("REST_API_KEY"+REST_API_KEY);
+// const REDIRECT_URI = Config.REDIRECT_URI;
+// console.log("REDIRECT_URI"+REDIRECT_URI);
 
-//Storages/storage';
-
-const REDIRECT_URI = Config.REDIRECT_URI;
+const REST_API_KEY = "76220cd03a0e12c5f44c41aa4cce2037";
+const REDIRECT_URI= "http://192.168.219.107:3000/login";
 const userAgent =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
@@ -78,6 +81,9 @@ const requestToken = async (code, navigation, dispatch) => {
     console.log(responseData);
     const value = responseData.data;
     const result = await storeUser(value);
+
+
+    console.log("에러발생지점 여기인듯");
     console.log(result);
     if (result === 'stored') {
       const user = await getData('user');

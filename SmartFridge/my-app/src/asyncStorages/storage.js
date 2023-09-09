@@ -4,12 +4,13 @@ const AsyncStorage = require('@react-native-async-storage/async-storage');
 // const Iuser = require('../types'); // 필요한 경우 주석을 해제하세요
 
 const storeUser = async (value) => {
+  console.log(value);
   if (value.result === 'success') {
     try {
       const storeData = await AsyncStorage.setItem(
         'user',
         JSON.stringify(value.data)
-      );3
+      );
       return 'stored';
     } catch (e) {
       console.log(e, '스토어 에러');

@@ -132,11 +132,12 @@ const userReducer = (state = initialState, action) => {
   }
 };
 
-module.exports = {
-  addUserSuccess,
-  fetchUserStart,
-  fetchUserSuccess,
-  fetchUserFail,
-  removeUserSuccess,
-  userReducer,
-};
+export {
+    addUserSuccess,
+    fetchUserStart,
+    fetchUserSuccess,
+    fetchUserFail,
+    removeUserSuccess
+  };
+  
+  export default userReducer;
