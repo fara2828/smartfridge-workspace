@@ -1,0 +1,42 @@
+import * as React from 'react';
+import * as WebBrowser from 'expo-web-browser';
+import * as AuthSession from 'expo-auth-session/providers/google';
+import { TouchableOpacity } from 'react-native';
+
+
+WebBrowser.maybeCompleteAuthSession();
+const useProxy = true;
+export const handleLogin = async (platform, username, password, navigation) => {
+  if (platform === 'Kakao') {
+    // Kakao login logic here
+  } else if (platform === 'Naver') {
+    // Naver login logic here
+  } else if (platform === 'Google') {
+
+    const client_id = '254999790304-qj2jpp2crdvd635s5s6lqqbm5fnceuup.apps.googleusercontent.com'; // Replace with your client id
+   
+    // Create and load an auth request
+    const [request, response, promptAsync] = AuthSession.useAuthRequest({
+      expoClientId: 'GOOGLE_GUID.apps.googleusercontent.com',
+      iosClientId: 'GOOGLE_GUID.apps.googleusercontent.com',
+      androidClientId: 'GOOGLE_GUID.apps.googleusercontent.com',
+      webClientId: 'GOOGLE_GUID.apps.googleusercontent.com',
+    });
+    React.useEffect(() => {
+      if (response?.type === 'success') {
+        const { authentication } = response;
+        }
+    }, [response]);
+  
+    return (
+      <Button
+        disabled={!request}
+        title="Login"
+        onPress={() => {
+          promptAsync();
+          }}
+      />
+    );
+  }
+
+}
