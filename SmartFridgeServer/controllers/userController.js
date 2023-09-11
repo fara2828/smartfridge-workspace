@@ -22,13 +22,11 @@ import('node-fetch').then((module) => {
 
 
 exports.login = async function (req, res) {
-  console.log("req 출력!!!!!!!!" + req);
-  console.log(req.body);
-  //  console.log(req);
-  console.log(req.body);
+  // 카카오 Oauth에서 넘겨준 body의 acces_token추출
   const { ACCESS_TOKEN } = req.body;
   console.log(ACCESS_TOKEN);
   let kakaoAccountResponse;
+  // accessToken으로 카카오 유저정보 요청하기
   try {
     const url = 'https://kapi.kakao.com/v2/user/me';
     const fetchOptions = {
@@ -64,10 +62,12 @@ exports.login = async function (req, res) {
     
     // 기존 코드에서는 const { data } = kakaoAccountResponse; 라고 되어있었습니다.
     // fetch는 data 객체를 가지고 있지 않으므로, kakaoAccountResponse를 그대로 사용합니다.
+    // kakao서버로부터 전달받은 로그인 정보 중 
+    // db에 저장을 원하는 정보를 추출
     const { id, kakao_account } = kakaoAccountResponse;  // kakaoAccountResponse에서 직접 정보를 가져옵니다.
     const { email, age_range, gender } = kakao_account;
 
-    console.log('before result ------------------------');
+    // sequelize를 통해 user테이블에 해당 id가 존재하는지 검색
     const result = await Users.findOne({ where: { id: id } });
 
     if (result) {
@@ -75,14 +75,21 @@ exports.login = async function (req, res) {
         result: 'success',
         data: result,
       };
+      // 이미 존재하는 user정보라믄, "success" 문구를 응답으로 전송
       res.send(response);
     } else {
+      // 신규 유저 정보라면, 저장
+
+      //데이터베이스에 저장할 사용자 정보를 객체 형태로 정의
       const payload = {
         id: id,
         email: email,
         age_range: age_range,
         gender: gender
       };
+      //Users.create는 Sequelize 라이브러리에서 제공하는 메소드. 이 메소드는 새로운 레코드(행)를 데이터베이스 테이블에 추가할 때 사용
+      //Users는Sequelize 모델로, 실제 데이터베이스의 테이블과 매핑되어 있음
+
       await Users.create(payload);
       const data = await Users.findOne({ where: { ID: id } });
       const response = {

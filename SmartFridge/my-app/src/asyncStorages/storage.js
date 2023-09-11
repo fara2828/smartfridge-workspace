@@ -1,9 +1,11 @@
-const AsyncStorage = require('@react-native-async-storage/async-storage');
-// const create_S = require('../Reducers/user'); // 필요한 경우 주석을 해제하세요
-// const ILocation = require('../Screens/CLocation'); // 필요한 경우 주석을 해제하세요
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const addUserSuccesss = require('../reducers/userReducer'); // 필요한 경우 주석을 해제하세요
+// const ILocation = require('../screens/cLocation'); // 필요한 경우 주석을 해제하세요
 // const Iuser = require('../types'); // 필요한 경우 주석을 해제하세요
 
 const storeUser = async (value) => {
+  
+  console.log('storage.js');
   console.log(value);
   if (value.result === 'success') {
     try {

@@ -1,44 +1,37 @@
 import React from 'react';
-import qs from 'querystring';
-import { WebView } from 'react-native-webview';
-import { View } from 'react-native';
-import { getData, storeUser } from '../asyncStorages/storage';
-import { useDispatch } from 'react-redux';
-import Config from 'react-native-config';
+import qs from 'querystring';  // 쿼리 문자열을 다루기 위한 라이브러리
+import { WebView } from 'react-native-webview';  // 웹뷰를 사용하기 위한 라이브러리
+import { View } from 'react-native';  // React Native의 View 컴포넌트
+import { getData, storeUser } from '../asyncStorages/storage';  // 로컬 스토리지에서 데이터를 가져오고 저장하는 함수
+import { useDispatch } from 'react-redux';  // Redux의 dispatch를 사용하기 위한 hook
+import Config from 'react-native-config';  // 환경 변수를 관리하기 위한 라이브러리
+import { addUserSuccess } from '../reducers/userReducer';  // 사용자 정보를 저장하기 위한 Redux 액션
 
-//console.log(Config);
-// const REST_API_KEY = Config.REST_API_KEY;
-// console.log("REST_API_KEY"+REST_API_KEY);
-// const REDIRECT_URI = Config.REDIRECT_URI;
-// console.log("REDIRECT_URI"+REDIRECT_URI);
-
+// Kakao API 정보 (환경 변수에서 불러올 수도 있습니다.)
 const REST_API_KEY = "76220cd03a0e12c5f44c41aa4cce2037";
-const REDIRECT_URI= "http://192.168.219.107:3000/login";
-const userAgent =
-  'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3 like Mac OS X) AppleWebKit/602.1.50 (KHTML, like Gecko) CriOS/56.0.2924.75 Mobile/14E5239e Safari/602.1';
+const REDIRECT_URI = "http://192.168.219.107:3000/login";
+
+// 웹뷰에 사용할 사용자 에이전트와 자바스크립트 코드
+const userAgent = 'Mozilla/5.0 ...';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
 
+// OAuth2 인증에 사용할 grant_type
 const grant_type = 'authorization_code';
 
-
+// 카카오 OAuth 토큰을 요청하는 함수
 const requestToken = async (code, navigation, dispatch) => {
+
   console.log("requestToken params:" + code + navigation)
-  const requestTokenUrl = 'https://kauth.kakao.com/oauth/token';
-  const requestUserUrl = 'https://kapi.kakao.com/v1/user/access_token_info';
-
-
+  const requestTokenUrl = 'https://kauth.kakao.com/oauth/token'; //  Kakao의 OAuth 토큰을 요청할 URL
+  const requestUserUrl = 'https://kapi.kakao.com/v1/user/access_token_info'; // 사용자 정보를 가져올 URL
   let ACCESS_TOKEN;
   let body;
-
-
   const options = qs.stringify({
     grant_type: grant_type,
     client_id: REST_API_KEY,
     redirect_uri: REDIRECT_URI,
     code,
   });
-
-
 
   try {
     // const formBody = qs.stringify(options);
@@ -50,15 +43,10 @@ const requestToken = async (code, navigation, dispatch) => {
       },
       body: formBody,
     });
-    console.log("tokenResponse"+tokenResponse);
-     const tokenData = await tokenResponse.json();
-     console.log(tokenData);
-
-
+    const tokenData = await tokenResponse.json();
 
     ACCESS_TOKEN = tokenData.access_token;
     console.log("ACCESS tOEKN:" + ACCESS_TOKEN);
-
     body = {
       ACCESS_TOKEN,
       requestUserUrl,
@@ -68,6 +56,7 @@ const requestToken = async (code, navigation, dispatch) => {
     };
 
     // 백엔드 API에 요청
+
     const response = await fetch(REDIRECT_URI, {
       method: 'POST',
       headers: {
@@ -79,16 +68,21 @@ const requestToken = async (code, navigation, dispatch) => {
     const responseData = await response.json();
     console.log("kakaologin responsedata")
     console.log(responseData);
-    const value = responseData.data;
+    // 카카오 API에서 받아온 사용자 정보 
+
+    const value = responseData;
+    // 카카오 사용자 정보를 로컬 스토리지에 저장
     const result = await storeUser(value);
-
-
-    console.log("에러발생지점 여기인듯");
     console.log(result);
+
+    // 로컬 스토리지에 성공적으로 저장되었으면
     if (result === 'stored') {
+      // Redux의 상태를 업데이트하고 다음 페이지로 이동
       const user = await getData('user');
-      dispatch(read_S(user));
-      await navigation.navigate('Main');
+      
+      dispatch(addUserSuccess(user));
+      console.log('addUserSuccess');
+      await navigation.navigate('MyPage');
     }
     // if (responseData === 'User information saved.') {
     //   navigation.navigate('MyPage');
