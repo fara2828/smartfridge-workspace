@@ -9,8 +9,10 @@ import { addUserSuccess } from '../reducers/userReducer';  // 사용자 정보�
 
 // Kakao API 정보 (환경 변수에서 불러올 수도 있습니다.)
 const REST_API_KEY = "76220cd03a0e12c5f44c41aa4cce2037";
+//집 ip
 const REDIRECT_URI = "http://192.168.219.107:3000/login";
-
+// 용인청년랩 ip
+//const REDIRECT_URI = "http://183.100.2.201:3000/login";
 // 웹뷰에 사용할 사용자 에이전트와 자바스크립트 코드
 const userAgent = 'Mozilla/5.0 ...';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
@@ -56,7 +58,7 @@ const requestToken = async (code, navigation, dispatch) => {
     };
 
     // 백엔드 API에 요청
-
+    // redirect_uri 에 설정된 /login, userController.js의 login으로 
     const response = await fetch(REDIRECT_URI, {
       method: 'POST',
       headers: {
@@ -79,7 +81,7 @@ const requestToken = async (code, navigation, dispatch) => {
     if (result === 'stored') {
       // Redux의 상태를 업데이트하고 다음 페이지로 이동
       const user = await getData('user');
-      
+
       dispatch(addUserSuccess(user));
       console.log('addUserSuccess');
       await navigation.navigate('MyPage');

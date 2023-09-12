@@ -7,6 +7,7 @@ const process = require('process');
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
+const { User, Fridge, Item } = require('./models');  // 수정된 부분
 const db = {};
 
 let sequelize;
@@ -15,6 +16,12 @@ if (config.use_env_variable) {
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
+
+// // 모델을 db 객체에 추가
+// db['User'] = User;
+// db['Fridge'] = Fridge;
+// db['Item'] = Item;
+
 
 fs
   .readdirSync(__dirname)
@@ -27,11 +34,14 @@ fs
     );
   })
   .forEach(file => {
+    console.log(`Loading model file: ${file}`);
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
     db[model.name] = model;
   });
 
 Object.keys(db).forEach(modelName => {
+
+  console.log(`Associating model: ${modelName}`)
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
