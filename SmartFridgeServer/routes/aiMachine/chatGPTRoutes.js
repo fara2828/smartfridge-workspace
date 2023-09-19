@@ -1,7 +1,9 @@
 const Router = require('express').Router;
-const chatgptRoutes = require('../../controllers/gptRecipeController');
+const chatgptController = require('../../controllers/gptRecipeController');
 
-const chatgptRoutes = Router();
+const chatgptRouter = Router();
 
-chatgptRoutes.post('/gptRecipe', chatgptRoutes.gptRecipe);
-module.exports = chatgptRoutes;
+
+chatgptRouter.post('/gptRecipe', chatgptController.gptRecipe);
+
+module.exports = chatgptRouter;
