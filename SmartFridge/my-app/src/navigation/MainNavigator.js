@@ -3,7 +3,7 @@ import SplashScreen from '../screens/SplashScreen';
 import MyPage from '../screens/MyPage';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
-import AddItem from '../screens/AddItem';
+import AddItem from '../screens/AddItemScreen';
 import MyFridge from '../screens/MyFridge';
 import KakaoLogin from '../screens/KakaoLoginScreen';
 

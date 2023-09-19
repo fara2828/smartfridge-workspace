@@ -35,7 +35,7 @@ const userRoutes = require('./routes/user/userRoutes');
 const routes = require('./routes');
 
 // MySQL 연결
-const connection = require('./config/db');
+const connection = require('./database/models/index');
 
 // 기존 라우터 사용
 app.use('/', routes);

@@ -42,7 +42,6 @@ User.init({
   timestamps: false
 });
 
-User.associate = function(models) {
-  User.hasMany(models.Fridge, { foreignKey: 'user_no' });
-};
+
+
 module.exports = User;

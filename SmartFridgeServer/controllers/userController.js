@@ -1,4 +1,4 @@
-const {User, Fridge, Item}  = require('../database/models/models');
+const {User, Fridge, Item, Image, Category}  = require('../database/models/models');
 const { Success, Failure } = require('../types/response');
 const path = require('path');
 const { sequelize } = require('../config/db');
@@ -61,11 +61,11 @@ exports.login = async function (req, res) {
     const { email, age_range, gender } = kakao_account;
     let result;
     // sequelize를 통해 user테이블에 해당 id가 존재하는지 검색
-    result = await User.findOne({ where: { id: id } });
-    console.log('result 찍어보기. 괜찮았는데..?');
-    console.log(result);
+    user = await User.findOne({ where: { id: id } });
+    console.log('user 찍어보기');
+    console.log(user);
 
-    if (!result) {
+    if (!user) {
       // 신규 유저 정보라면, 저장
 
       //데이터베이스에 저장할 사용자 정보를 객체 형태로 정의
@@ -80,31 +80,50 @@ exports.login = async function (req, res) {
 
       await User.create(payload);
       // 제대로 id가 삽입되었는지 확인 
-      result = await User.findOne({ where: { id: id } });
+     user = await User.findOne({ where: { id: id } });
       console.log('User.create 실행 후, Fridge.findAll 실행 전');  // Log 추가
-      console.log(result);
+      console.log(user);
       //----------------------------------------------------------------
       // 해당 id로 검색되는 아이템이 있는지 여부를 검색합니다.
 
 
-    }
+    }  
+
+    console.log('user이 있으면 바로 가져오고, 없으면 생성 후 가져오기. 이걸 기반으로 firdge, item을 찾을거야')
+    console.log(user);
 
     try {
-      const items = await Fridge.findAll({
-        where: { user_no: result.user_no },
+      const items = await Item.findAll({
+        attributes: ['user_no', 'item_no', 'item_name','registered_date','fridge_no',  'storage_type', 'exp_date', 'image_id'], // SELECT 구문의 컬럼들
         include: [
           {
             model: User,
-            attributes: ['user_no'],
-            required: true
+            attributes: [], // user 테이블에서 가져올 필요가 없는 컬럼은 비워둡니다.
+            where: {
+              user_no: user.user_no,
+              user_status: 'Y'
+            }
           },
           {
-            model: Item,
-            attributes: ['item_no', 'item_name', 'exp_date', 'item_category'],
-            required: false // LEFT OUTER JOIN을 위해
+            model: Fridge,
+            attributes: ['fridge_name']
+          },
+          {
+            model: Image,
+            attributes: ['file_path', 'file_name', 'reference_type'],
+            where: {
+              reference_type: 'item'
+            }
           }
         ],
-        attributes: ['fridge_no', 'fridge_name']
+        where: {
+          user_no: user.user_no
+        },
+        order: [
+          ['fridge_no', 'ASC'],
+          ['storage_type', 'DESC'],
+          ['exp_date', 'DESC']
+        ]
       });
       console.log('Fridge.findAll 실행 후');  // Log 추가
 
@@ -114,8 +133,8 @@ exports.login = async function (req, res) {
 
       const response = {
         result: 'success',
-        result,
-        items
+        items,
+        user
       };
       res.send(response);  // 이 부분을 try 블록 안으로 옮깁니다.
     } catch (e) {

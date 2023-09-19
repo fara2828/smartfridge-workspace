@@ -1,4 +1,4 @@
-const User = require('../models/fridgeModel');
+const {User, Fridge, }= require('../models/models');
 
 const createTable = async () => {
   try {

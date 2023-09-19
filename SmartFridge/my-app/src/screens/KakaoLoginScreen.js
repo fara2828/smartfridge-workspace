@@ -10,9 +10,9 @@ import { addUserSuccess } from '../reducers/userReducer';  // 사용자 정보�
 // Kakao API 정보 (환경 변수에서 불러올 수도 있습니다.)
 const REST_API_KEY = "76220cd03a0e12c5f44c41aa4cce2037";
 //집 ip
-const REDIRECT_URI = "http://192.168.219.107:3000/login";
-// 용인청년랩 ip
-//const REDIRECT_URI = "http://183.100.2.201:3000/login";
+//const REDIRECT_URI = "http://192.168.219.107:3000/login";
+const REDIRECT_URI = "http://192.168.219.104:3000/login";
+
 // 웹뷰에 사용할 사용자 에이전트와 자바스크립트 코드
 const userAgent = 'Mozilla/5.0 ...';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
@@ -67,14 +67,20 @@ const requestToken = async (code, navigation, dispatch) => {
       body: JSON.stringify(body),
     });
 
-    const responseData = await response.json();
-    console.log("kakaologin responsedata")
-    console.log(responseData);
+    const loginResponse = await response.json();
+    console.log("kakaologin loginResponse")
+    console.log(loginResponse);
     // 카카오 API에서 받아온 사용자 정보 
+    /*
+    const response = {
+      result: 'success',
+      items,
+      user
+    }; */
 
-    const value = responseData;
     // 카카오 사용자 정보를 로컬 스토리지에 저장
-    const result = await storeUser(value);
+    const result = await storeUser(loginResponse);
+    console.log('------------------------------------result-------------------------------------------');
     console.log(result);
 
     // 로컬 스토리지에 성공적으로 저장되었으면
@@ -84,7 +90,9 @@ const requestToken = async (code, navigation, dispatch) => {
 
       dispatch(addUserSuccess(user));
       console.log('addUserSuccess');
-      await navigation.navigate('MyPage');
+     // 변경 후: loginResponse의 user와 items을 MyPage로 전달
+      await navigation.navigate('MyPage', { user: loginResponse.user, items: loginResponse.items });
+
     }
     // if (responseData === 'User information saved.') {
     //   navigation.navigate('MyPage');

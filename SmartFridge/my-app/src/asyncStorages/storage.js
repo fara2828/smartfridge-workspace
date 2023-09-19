@@ -3,15 +3,20 @@ const addUserSuccesss = require('../reducers/userReducer'); // 필요한 경우 
 // const ILocation = require('../screens/cLocation'); // 필요한 경우 주석을 해제하세요
 // const Iuser = require('../types'); // 필요한 경우 주석을 해제하세요
 
-const storeUser = async (value) => {
-  
+const storeUser = async (loginResponse) => {
+  /**
+      const response = {
+        result: 'success',
+        items,
+        user
+      }; */
   console.log('storage.js');
-  console.log(value);
-  if (value.result === 'success') {
+  console.log(loginResponse);
+  if (loginResponse.result === 'success') {
     try {
       const storeData = await AsyncStorage.setItem(
         'user',
-        JSON.stringify(value.data)
+        JSON.stringify(loginResponse.user)
       );
       return 'stored';
     } catch (e) {
