@@ -30,6 +30,7 @@ app.use(express.static(path.join(__dirname, staticDir)));
 // 새로운 라우터 불러오기
 //const dataRoutes = require('.user/routes/dataRoutes');
 const userRoutes = require('./routes/user/userRoutes');
+const chatgptRoutes = require('./routes/aiMachine/chatGPTRoutes');
 
 // 기존 라우터
 const routes = require('./routes');
@@ -44,6 +45,7 @@ app.use('/', routes);
 //app.use('/data', dataRoutes);
 //app.use('/auth', authRoutes);
 app.use('/login', userRoutes);
+app.use('/gptRecipe', chatgptRoutes);
 
 // 서버 실행
 // connection.connect(err => {
