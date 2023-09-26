@@ -15,7 +15,7 @@ const apiKey = "da53915e60b24b1eb9ea";
 const url = 'http://openapi.foodsafetykorea.go.kr/api/' + apiKey + '/C005/json/1/5/BAR_CD='
 //http://openapi.foodsafetykorea.go.kr/api/sample/C005/xml/1/5/BAR_CD=값
 // const url = 'http://openapi.foodsafetykorea.go.kr/api/' + apiKey + '/I2570/json/1/5/BRCD_NO=8809360172547'
-            //http://openapi.foodsafetykorea.go.kr/api/인증키/서비스명/요청파일타입/요청시작위치/요청종료위치
+//http://openapi.foodsafetykorea.go.kr/api/인증키/서비스명/요청파일타입/요청시작위치/요청종료위치
 const RadioButton = ({ value, label, selectedValue, onSelect }) => (
     <TouchableOpacity style={styles.radioButton} onPress={() => onSelect(value)}>
         <Text>{label}</Text>
@@ -25,12 +25,12 @@ const RadioButton = ({ value, label, selectedValue, onSelect }) => (
 
 
 
-const AddItem = ({ navigation , route }) => {
+const AddItem = ({ navigation, route }) => {
 
 
     const { userNo, fridges } = route.params;
     console.log('addItem.js');
-    
+
     console.log(userNo);
     console.log(fridges);
 
@@ -97,11 +97,11 @@ const AddItem = ({ navigation , route }) => {
         setScanned(true);
         // 인식된 바코드의 값과 형식을 state에 저장
         setBarcode({ type, data });
-        
+
 
         // setBarcode({ type, data });
         // // Open API 호출
-        data='195505090011'
+        data = '195505090011'
 
         fetch(url + data)
             .then(response => {
@@ -118,7 +118,44 @@ const AddItem = ({ navigation , route }) => {
                 setError(error.message);
             });
     };
+    // 서버에 데이터를 저장할 함수
+    const saveItem = async () => {
+        const payload = {
+            userNo,
+            selectedFridge,
+            imageUri,
+            category,
+            count,
+            division,
+            purchaseDate,
+            expiryDate,
+            store,
+            memo,
+            barcode: barcode ? barcode.data : null,
+            product
+        };
 
+        try {
+            // 서버에 POST 요청을 보냅니다.
+            const response = await fetch('http://192.168.219.104:3000/saveItem', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('아이템이 성공적으로 저장되었습니다.');
+            } else {
+                alert('아이템 저장에 실패했습니다.');
+            }
+        } catch (error) {
+            alert('서버 오류: ' + error.message);
+        }
+    };
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -133,7 +170,7 @@ const AddItem = ({ navigation , route }) => {
                         <Picker.Item label={fridge} value={fridge} key={index} />
                     ))}
                 </Picker>
-                
+
                 <Text style={styles.label}>구분</Text>
                 <View style={styles.row}>
                     <RadioButton value="냉장실" label="냉장실" selectedValue={division} onSelect={storageType} />
@@ -170,7 +207,7 @@ const AddItem = ({ navigation , route }) => {
                 <TouchableOpacity onPress={() => setShowExpiryPicker(true)}>
                     <Text>{expiryDate.toLocaleDateString()}</Text>
                 </TouchableOpacity>
-                {showExpiryPicker && (
+                {showExpiryPicker && (   
                     <DateTimePicker mode="date" value={expiryDate} onChange={onChangeExpiryDate} />
                 )}
 
@@ -210,8 +247,8 @@ const AddItem = ({ navigation , route }) => {
                 < Text style={styles.label}>메모</Text>
                 <TextInput style={styles.input} multiline onChangeText={setMemo} value={memo} />
 
-                <TouchableOpacity style={styles.saveButton}>
-                    <Text style={styles.saveButtonText}>저장</Text>
+                <TouchableOpacity style={styles.saveButton} onPress={saveItem}>
+                    <Text style={styles.saveButtonText} >저장</Text>
                 </TouchableOpacity>
             </View>
 

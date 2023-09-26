@@ -6,12 +6,12 @@ import { getData, storeUser } from '../asyncStorages/storage';  // 로컬 스토
 import { useDispatch } from 'react-redux';  // Redux의 dispatch를 사용하기 위한 hook
 import Config from 'react-native-config';  // 환경 변수를 관리하기 위한 라이브러리
 import { addUserSuccess } from '../reducers/userReducer';  // 사용자 정보를 저장하기 위한 Redux 액션
-
+import { API_BASE_URL } from '../services/apiConfig';
 // Kakao API 정보 (환경 변수에서 불러올 수도 있습니다.)
 const REST_API_KEY = "76220cd03a0e12c5f44c41aa4cce2037";
 //집 ip
 //const REDIRECT_URI = "http://192.168.219.107:3000/login";
-const REDIRECT_URI = "http://192.168.219.104:3000/login";
+const REDIRECT_URI = API_BASE_URL+'/login';
 
 // 웹뷰에 사용할 사용자 에이전트와 자바스크립트 코드
 const userAgent = 'Mozilla/5.0 ...';
