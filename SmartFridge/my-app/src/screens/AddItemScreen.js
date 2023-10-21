@@ -137,7 +137,7 @@ const AddItem = ({ navigation, route }) => {
 
         try {
             // 서버에 POST 요청을 보냅니다.
-            const response = await fetch('http://192.168.219.104:3000/saveItem', {
+            const response = await fetch('http://192.168.219.105:3000/saveItem', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

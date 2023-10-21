@@ -12,6 +12,10 @@ const LoginScreen = ({ navigation }) => {
     if (platform === 'Kakao') {
       navigation.navigate('KakaoLogin');
       return;
+    }   
+    if (platform === 'Naver') {
+      navigation.navigate('GptRecipe');
+      return;
     }
 
 
@@ -23,6 +27,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.h1}>똑똑한 냉장고</Text>
       </View>
       <View style={styles.main}>
+        
         <Text style={styles.h1}>로그인</Text>
         <TouchableOpacity style={styles.button} onPress={() => handleLogin('Kakao')}>
           <Text>카카오 계정으로 로그인</Text>

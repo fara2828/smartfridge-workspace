@@ -4,6 +4,6 @@ const chatgptController = require('../../controllers/gptRecipeController');
 const chatgptRouter = Router();
 
 
-chatgptRouter.post('/gptRecipe', chatgptController.gptRecipe);
+chatgptRouter.post('/:id/gptRecipe', chatgptController.gptRecipe);
 
 module.exports = chatgptRouter;

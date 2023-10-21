@@ -45,7 +45,7 @@ app.use('/', routes);
 //app.use('/data', dataRoutes);
 //app.use('/auth', authRoutes);
 app.use('/login', userRoutes);
-app.use('/gptRecipe', chatgptRoutes);
+app.use('/:id/gptRecipe', chatgptRoutes);
 
 // 서버 실행
 // connection.connect(err => {
@@ -60,5 +60,5 @@ app.use('/gptRecipe', chatgptRoutes);
 //   }
 // });
 app.listen(port, () => {
-  console.log(`Server running at http://192.168.219.107:${port}/`);
+  console.log(`Server running at http://192.168.219.105:${port}/`);
 });

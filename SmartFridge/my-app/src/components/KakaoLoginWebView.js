@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 import { WebView } from 'react-native-webview';
 
 const REST_API_KEY = '76220cd03a0e12c5f44c41aa4cce2037';
-const REDIRECT_URI = 'http://192.168.219.104:19000';
+const REDIRECT_URI = 'http://192.168.219.105:19000';
 const INJECTED_JAVASCRIPT = `window.ReactNativeWebView.postMessage('message from webView')`;
  
 function KakaoLoginWebView() {

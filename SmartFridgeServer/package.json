@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^1.5.0",
     "body-parser": "^1.20.2",
+    "chatgpt": "^5.2.5",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "global": "^4.4.0",
@@ -19,8 +20,9 @@
     "mysql": "^2.18.1",
     "mysql2": "^3.6.0",
     "node-fetch": "^3.3.2",
+    "openai": "^4.12.4",
     "sequelize": "^6.32.1",
     "sequelize-cli": "^6.6.1"
   },
-  "proxy": "http:///192.168.219.107:3000"
+  "proxy": "http:///192.168.219.105:3000"
 }

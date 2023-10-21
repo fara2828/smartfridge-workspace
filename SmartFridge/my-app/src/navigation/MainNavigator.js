@@ -6,7 +6,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import AddItem from '../screens/AddItemScreen';
 import MyFridge from '../screens/MyFridge';
 import KakaoLogin from '../screens/KakaoLoginScreen';
-
+import GptRecipe from '../screens/GptRecipe';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +20,7 @@ const MainNavigator = () => {
       <Stack.Screen name="AddItem" component={AddItem} />
       <Stack.Screen name="MyFridge" component={MyFridge} />
       <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+      <Stack.Screen name="GptRecipe" component={GptRecipe} />
     </Stack.Navigator>
   );
 };
