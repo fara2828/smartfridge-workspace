@@ -4,13 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 
 // Initialize Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDMS7vWHx0LmD7AeSWpBubCaxbgv4EEyLc",
-    authDomain: "smartfridge-b50d1.firebaseapp.com",
-    projectId: "smartfridge-b50d1",
-    storageBucket: "smartfridge-b50d1.appspot.com",
-    messagingSenderId: "104830455974",
-    appId: "1:104830455974:web:17f8139a06ddf10eb8a467",
-    measurementId: "G-35NHTPNBZ3"
+    apiKey: process.env.FIREBASE_APIKET,
+    authDomain: process.env.FIREBASE_AUTHDOMAIN,
+    projectId: process.env.FIREBASE_PROJECTID,
+    storageBucket: process.env.FIREBASE_STORAGEBUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGINGSENDERID,
+    appId: process.env.FIREBASE_APPID,
+    measurementId: process.env.FIREBASE_MEASUREMENTID
 };
 
 export const FIREBASE_APP = initializeApp(firebaseConfig);

@@ -1,14 +1,16 @@
+
+// dotenv
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, 'config/.env') });
+
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
-const port = 3000;
-const path = require('path');
+const port = process.env.SERVER_PORT;
+// const path = require('path');
 
-
-
-const staticDir =
-  process.env.NODE_ENV === 'production' ? '../src/public' : './public';
+const staticDir = process.env.NODE_ENV === 'production' ? '../src/public' : './public';
 const PORT = 4000;
 
 // 기존 미들웨어
@@ -60,5 +62,5 @@ app.use('/:id/gptRecipe', chatgptRoutes);
 //   }
 // });
 app.listen(port, () => {
-  console.log(`Server running at http://192.168.219.105:${port}/`);
+  console.log(`Server running at ${process.env.SERVER_URI}:${port}/`);
 });

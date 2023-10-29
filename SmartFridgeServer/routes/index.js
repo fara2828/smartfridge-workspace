@@ -6,6 +6,7 @@ const dataController = require('../controllers/dataController');
 const authController = require('../controllers/authController');
 const userController = require('../controllers/userController');
 const itemController = require('../controllers/itemController');
+const chatgptController = require('../controllers/gptRecipeController');
 
 
 
@@ -18,6 +19,7 @@ router.get('/api/data', dataController.fetchData);
 router.post('/login', userController.login);
 router.post('/addItem', itemController.addItem);
 
+router.post('/gptRecipe', chatgptController.gptRecipe);
 //router.get('/login', kakaoController.loading);
 // router.get('/login', kakaoController.login)
 

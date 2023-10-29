@@ -1,1 +1,2 @@
-export const API_BASE_URL = 'http://192.168.219.105:3000';
+import { REDIRECT_URI } from '@env';
+export const API_BASE_URL = REDIRECT_URI;
