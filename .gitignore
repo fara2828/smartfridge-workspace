@@ -398,4 +398,4 @@ google-services.json
 #configfiles
 #카카오 API키
 .env
-
+config.json
