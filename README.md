@@ -1,5 +1,5 @@
 
-# 똑똑한냉장고 (똑냉)
+# 💧 똑똑한냉장고 (똑냉)
 
 ## **프로젝트 개요**
 
@@ -13,15 +13,23 @@
 
 
 ## Tech Stack
-
-
-
-| 구분 | 기술 |
-| --- | --- |
-| Front-end | React Native  |
-| Back-end | Node.js  |
-| Database | MySQL / Sequelize |
-
+- Back-end:
+  <div>
+     <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=Node.js&logoColor=white"/>
+  </div>  
+- DB:
+  <div>        <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
+    <img src="https://img.shields.io/badge/Sequelize-52B0E7?style=flat-square&logo=Sequelize&logoColor=white"/>
+  </div>
+- Front-end:
+  <div>
+    <img src="https://img.shields.io/badge/React Native-61DAFB?style=flat-square&logo=React&logoColor=white">
+  </div>
+- Others:
+  <div>
+   <img src="https://img.shields.io/badge/Kakao Login API-yellow?style=flat-square&logoColor=white" />
+   <img src="https://img.shields.io/badge/Chat GPT API-Green?style=flat-square&logoColor=white" />
+  </div>  
 
 
 ## 전체 기능
@@ -56,5 +64,5 @@
             - 레시피 난이도
             - 요리 인분
         - 몇인분
-    - 레시피 보여주기
+    - 레시피 보여주기 (Chat-GPT API)
         - 레시피 저장하기
