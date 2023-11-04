@@ -17,7 +17,7 @@ const GptRecipe = () => {
         });
   
         const data = await response.json();
-        //console.log(data);
+        console.log(data);
         setGpt3Response(data.response);
       } catch (error) {
         console.error('Error:', error);
