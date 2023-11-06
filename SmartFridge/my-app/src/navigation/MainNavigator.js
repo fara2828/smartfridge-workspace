@@ -14,13 +14,18 @@ const MainNavigator = () => {
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyPage" component={MyPage} />
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
-      <Stack.Screen name="AddItem" component={AddItem} />
-      <Stack.Screen name="MyFridge" component={MyFridge} />
-      <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
-      <Stack.Screen name="GptRecipe" component={GptRecipe} />
+      <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }}/>
+      <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }}/>
+      <Stack.Screen name="AddItem" component={AddItem} options={{ headerShown: false }}/>
+      <Stack.Screen name="MyFridge" component={MyFridge} options={{ headerShown: false }}/>
+      <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{ headerShown: false }}/>
+      <Stack.Screen
+        name="GptRecipe"
+        component={GptRecipe}
+        options={{ headerShown: false }} // 헤더를 숨기는 옵션을 추가합니다.
+      />
+
     </Stack.Navigator>
   );
 };

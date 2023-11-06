@@ -9,3 +9,6 @@ npm install express
 
 #
 npm install -D nodemon
+
+#  picker
+npm install @react-native-picker/picker
