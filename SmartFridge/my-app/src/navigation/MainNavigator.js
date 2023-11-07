@@ -1,4 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import SplashScreen from '../screens/SplashScreen';
 import MyPage from '../screens/MyPage';
 import LoginScreen from '../screens/LoginScreen';
@@ -7,27 +9,164 @@ import AddItem from '../screens/AddItemScreen';
 import MyFridge from '../screens/MyFridge';
 import KakaoLogin from '../screens/KakaoLoginScreen';
 import GptRecipe from '../screens/GptRecipe';
-
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator(); // 탭 네비게이터 생성
 
-const MainNavigator = () => {
+// 각 스크린을 포함하는 스택 네비게이터 
+function StackNavigator() {
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }}/>
-      <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }}/>
-      <Stack.Screen name="AddItem" component={AddItem} options={{ headerShown: false }}/>
-      <Stack.Screen name="MyFridge" component={MyFridge} options={{ headerShown: false }}/>
-      <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{ headerShown: false }}/>
-      <Stack.Screen
-        name="GptRecipe"
-        component={GptRecipe}
-        options={{ headerShown: false }} // 헤더를 숨기는 옵션을 추가합니다.
+      <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
+      <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="AddItem" component={AddItem} options={{ headerShown: false }} />
+      <Stack.Screen name="MyFridge" component={MyFridge} options={{ headerShown: false }} />
+      <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{ headerShown: false }} />
+      <Stack.Screen name="GptRecipe" component={GptRecipe} options={{ headerShown: false }}
       />
 
     </Stack.Navigator>
+
+  );
+}
+const MainNavigator = () => {
+  return (
+    <Tab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarStyle: {
+          position: 'absolute',
+          elevation: 0,
+          backgroundColor: '#ffffff',
+          borderTopStartRadius: 15,
+          height: 60,
+          ...styles.shadow,
+        },
+      }}>
+      <Tab.Screen name="Home" component={StackNavigator} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#0000ff' : 'grey',
+              }}
+              source={require('../assets/icons/fridge.jpg')}
+            />
+          </View>
+        ),
+
+      }} />
+      <Tab.Screen name="AddItem" component={AddItem} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#0000ff' : 'grey',
+              }}
+              source={require('../assets/icons/add.png')}
+            />
+          </View>
+        ),
+      }} />
+      <Tab.Screen name="GptRecipe" component={GptRecipe} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#0000ff' : 'grey',
+              }}
+              source={require('../assets/icons/recipe.png')}
+            />
+          </View>
+        )
+      }} />
+      <Tab.Screen name="MyPage" component={MyPage} options={{
+        headerShown: false,
+        tabBarIcon: ({ focused }) => (
+          <View
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <Image
+              style={{
+                width: 30,
+                height: 30,
+                tintColor: focused ? '#0000ff' : 'grey',
+              }}
+              source={require('../assets/icons/my.jpg')}
+            />
+          </View>
+        )
+      }} />
+    </Tab.Navigator>
   );
 };
 
 export default MainNavigator;
+
+const styles = StyleSheet.create({
+  shadow: {
+    shadowColor: '#7F5DF0',
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.5,
+    elevation: 5,
+  },
+  MainContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'blue',
+  },
+  button: {
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: 'grey',
+    shadowOpacity: 0.1,
+    shadowOffset: { x: 2, y: 0 },
+    shadowRadius: 2,
+    borderRadius: 30,
+    position: 'absolute',
+    bottom: 20,
+    right: 0,
+    top: 5,
+    left: 5,
+    shadowOpacity: 5.0,
+  },
+  actionBtn: {
+    backgroundColor: '#1E90FF',
+    textShadowOffset: { width: 5, height: 5 },
+    textShadowRadius: 10,
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
+});

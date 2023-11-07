@@ -27,9 +27,12 @@ const RadioButton = ({ value, label, selectedValue, onSelect }) => (
 
 const AddItem = ({ navigation, route }) => {
 
+    console.log("addItem.js");
+    console.log(route.params)
 
     const { userNo, fridges } = route.params;
     console.log('addItem.js');
+    console.log(route.params);
 
     console.log(userNo);
     console.log(fridges);
@@ -52,6 +55,16 @@ const AddItem = ({ navigation, route }) => {
     const [error, setError] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [product, setProduct] = useState(null);
+    const categories = ['채소', '쌀/잡곡', '정육/계란', '수산물/건해산', '과일','우유/유제품', '밀키트/간편식', '김치/반찬', '생수/음료/차', '면류', '통조림', '양념/오일', '과자/간식', '베이커리/잼', '건강식품'];
+
+
+    // Picker.Item 컴포넌트를 생성하는 함수를 정의
+    const createPickerItems = (items) => {
+        return items.map((item, index) => (
+            <Picker.Item label={item} value={item} key={index} />
+        ));
+    };
+
 
     // 카메라 접근 권한을 얻는 부분
 
@@ -123,7 +136,8 @@ const AddItem = ({ navigation, route }) => {
         const payload = {
             userNo,
             selectedFridge,
-            imageUri,
+            item_name,
+            barcode,
             category,
             count,
             division,
@@ -131,10 +145,9 @@ const AddItem = ({ navigation, route }) => {
             expiryDate,
             store,
             memo,
-            barcode: barcode ? barcode.data : null,
             product
         };
-
+//INSERT INTO item (user_no, fridge_no, item_name, barcode, price, storage_type, exp_date, memo, image_id, registered_date, status, item_category) VALUES 
         try {
             // 서버에 POST 요청을 보냅니다.
             const response = await fetch('http://192.168.219.105:3000/saveItem', {
@@ -179,11 +192,15 @@ const AddItem = ({ navigation, route }) => {
                 </View>
 
                 <Text style={styles.label}>카테고리</Text>
-                <Picker selectedValue={category} onValueChange={(value) => setCategory(value)} style={styles.picker}>
-                    <Picker.Item label="야채" value="야채" />
-                    <Picker.Item label="육류" value="육류" />
-                    <Picker.Item label="조미료" value="조미료" />
+
+                <Picker
+                    selectedValue={category}
+                    onValueChange={(value) => setCategory(value)}
+                    style={styles.picker}
+                >
+                    {createPickerItems(categories)}
                 </Picker>
+
 
                 <Text style={styles.label}>갯수</Text>
                 <Picker selectedValue={count} onValueChange={(value) => setCount(value)} style={styles.picker}>
@@ -207,10 +224,11 @@ const AddItem = ({ navigation, route }) => {
                 <TouchableOpacity onPress={() => setShowExpiryPicker(true)}>
                     <Text>{expiryDate.toLocaleDateString()}</Text>
                 </TouchableOpacity>
-                {showExpiryPicker && (   
+                {showExpiryPicker && (
                     <DateTimePicker mode="date" value={expiryDate} onChange={onChangeExpiryDate} />
                 )}
-
+                 <Text style={styles.label}>가격</Text>
+                <TextInput style={styles.input} onChangeText={setStore} value={store} />
                 <Text style={styles.label}>구매처</Text>
                 <TextInput style={styles.input} onChangeText={setStore} value={store} />
 
@@ -243,7 +261,8 @@ const AddItem = ({ navigation, route }) => {
                         <Text onPress={() => setScanned(false)}>다시 스캔하기</Text>
                     </View>
                 )}
-
+                < Text style={styles.label}>제품명</Text>
+                <TextInput style={styles.input} multiline onChangeText={setMemo} value={memo} />
                 < Text style={styles.label}>메모</Text>
                 <TextInput style={styles.input} multiline onChangeText={setMemo} value={memo} />
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
 
+import * as Font from 'expo-font';
 
 
 const MyPage = ({ navigation, route }) => {
@@ -80,9 +81,19 @@ const MyPage = ({ navigation, route }) => {
    return getSortedItems(filteredItems, key);  // 필터링된 아이템을 정렬
  };
   
+ const callGPT = async () => {
+    navigation.navigate('GptRecipe');
+    return;
+  }
+
+
   return (
+    
     <View style={styles.container}>
       <Text style={styles.title}>마이똑냉</Text>
+      <TouchableOpacity style={styles.button} onPress={() => callGPT()}>
+          <Text>gpt요리추천</Text>
+        </TouchableOpacity>
       <View style={styles.boxContainer}>
         <View style={styles.box}>
           <Text style={styles.number}>{fridgeCount}</Text>
@@ -155,40 +166,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff', // Changed to pure white for a clean look
   },
-  header: {
-    fontSize: 30, // h1 size
+  title: {
+    fontSize: 26, // Increased size for better readability
     fontWeight: 'bold',
-    textAlign: 'left',
-    marginBottom: 20,
+    color: '#333', // Darker shade for better contrast
+    marginBottom: 20, // Spacing below title
   },
   boxContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 20, // Added spacing below the box container
   },
   box: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    height: '40%', // Fill the screen height
-    backgroundColor: '#e0e0e0', // Grayish background color
+    height: 120, // Fixed height for equal sizing
+    backgroundColor: '#007bff', // A shade of blue for a vibrant look
     margin: 10,
-    borderRadius: 5,
-    marginLeft: '5%', // 20px spacing on the left
-    marginRight: '5%', // 20px spacing on the right
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3, // Natural shadow
-    shadowRadius: 5,
+    borderRadius: 10, // Rounded corners
+    elevation: 3, // Android shadow
   },
   number: {
-    fontSize: 24,
+    fontSize: 32, // Larger text for the count
     fontWeight: 'bold',
+    color: '#ffffff', // White text for readability
   },
   label: {
-    fontSize: 16,
-    color: '#555',
+    fontSize: 18, // Larger label text
+    color: '#fff', // White label text
+    marginTop: 4, // Space between number and label
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -196,40 +205,42 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   button: {
-    backgroundColor: '#4caf50',
-    padding: 10,
-    borderRadius: 5,
-    width: '40%',
+    backgroundColor: '#28a745', // A more appealing green shade
+    padding: 15, // More padding for a larger button
+    borderRadius: 8, // Rounded corners for buttons
+    width: '45%', // Slightly larger width for balance
     alignItems: 'center',
+    elevation: 2, // Android shadow
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '500', // Changed from bold to 500 for a lighter appearance
+    fontSize: 16, // Increased font size for buttons
   },
   statusContainer: {
     marginTop: 20,
   },
   statusText: {
-    fontSize: 18,
+    fontSize: 20, // Size up for heading of sections
     fontWeight: 'bold',
-    textAlign: 'left',
-    marginBottom: 10,
+    color: '#212529', // Using a dark shade for the title text
+    marginBottom: 15, // More spacing for a cleaner look
   },
   subContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginBottom: 10,
+    marginBottom: 15, // Consistent spacing at the bottom
   },
   subBox: {
-    width: '40%',
-    height: 50,
-    backgroundColor: '#e0e0e0', // Grayish background color
-    borderRadius: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3, // Natural shadow
-    shadowRadius: 5,
+    width: '45%', // Adjusting to match button width
+    height: 60, // A taller box to fit larger text or more content
+    backgroundColor: '#6c757d', // A soft dark background for contrast
+    borderRadius: 8, // Rounded corners for sub-boxes
+    justifyContent: 'center', // Vertically centering the content
+    alignItems: 'center', // Horizontally centering the content
+    elevation: 1, // Subtle shadow for depth
   },
 });
+
 
 export default MyPage;

@@ -135,7 +135,9 @@ exports.login = async function (req, res) {
         result: 'success',
         items,
         user
+
       };
+      console.log('Response 객체:'+ response);
       res.send(response);  // 이 부분을 try 블록 안으로 옮깁니다.
     } catch (e) {
       console.log('아이템 조회 중 오류 발생');

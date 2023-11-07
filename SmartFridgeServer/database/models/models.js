@@ -248,6 +248,6 @@ module.exports = {
     User,
     Fridge,
     Item,
-    Category, // Newly added
-    Image // Newly added
+    Category, 
+    Image 
   };
