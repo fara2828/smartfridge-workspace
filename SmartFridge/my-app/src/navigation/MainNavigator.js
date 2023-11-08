@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'; //
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
@@ -9,21 +10,70 @@ import AddItem from '../screens/AddItemScreen';
 import MyFridge from '../screens/MyFridge';
 import KakaoLogin from '../screens/KakaoLoginScreen';
 import GptRecipe from '../screens/GptRecipe';
+import * as Font from 'expo-font';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); // 탭 네비게이터 생성
 
 // 각 스크린을 포함하는 스택 네비게이터 
 function StackNavigator() {
+  const [isReady, setIsReady] = useState(false); 
+
+  // 폰트 로딩을 위한 useEffect 훅
+  useEffect(() => {
+    // 비동기 로딩 함수
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        NotoSans: require("../assets/fonts/NotoSans.ttf"),
+        Dongle: require("../assets/fonts/Dongle-Regular.ttf"),
+      });
+      setIsReady(true);
+    };
+    loadFonts(); // 함수 호출
+  }, []);
+
+  if (!isReady) {
+    return <View><Text>Loading...</Text></View>; // 폰트가 로딩되지 않았을 때 로딩 텍스트를 표시
+  }
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyPage" component={MyPage} options={{ headerShown: false }} />
+      <Stack.Screen name="MyPage" component={MyPage} options={{ 
+            title: '나의 냉장고', // 헤더 타이틀 변경
+            headerStyle: {
+              backgroundColor: '#0054FF', // 헤더 배경색 변경
+            },
+            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+            headerTitleStyle: {
+              fontSize: 30,
+              fontFamily: 'Dongle'
+            },            
+          }}  />
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="AddItem" component={AddItem} options={{ headerShown: false }} />
+      <Stack.Screen name="AddItem" component={AddItem} options={{ 
+            title: '냉장고 재료 추가', // 헤더 타이틀 변경
+            headerStyle: {
+              backgroundColor: '#0054FF', // 헤더 배경색 변경
+            },
+            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+            headerTitleStyle: {
+              fontSize: 30,
+              fontFamily: 'Dongle'
+            },            
+          }}  />
       <Stack.Screen name="MyFridge" component={MyFridge} options={{ headerShown: false }} />
       <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{ headerShown: false }} />
-      <Stack.Screen name="GptRecipe" component={GptRecipe} options={{ headerShown: false }}
+      <Stack.Screen name="GptRecipe" component={GptRecipe} options={{ 
+            title: '냉장고 요리 추천', // 헤더 타이틀 변경
+            headerStyle: {
+              backgroundColor: '#0054FF', // 헤더 배경색 변경
+            },
+            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+            headerTitleStyle: {
+              fontSize: 30,
+              fontFamily: 'Dongle'
+            },            
+          }} 
       />
 
     </Stack.Navigator>

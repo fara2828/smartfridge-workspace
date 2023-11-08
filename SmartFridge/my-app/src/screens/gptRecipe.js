@@ -1,9 +1,30 @@
-import React, { useState } from 'react';
-import { ScrollView, View, TextInput, Button, Text, StyleSheet, StatusBar } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Modal, ScrollView, View, TextInput, Button, Text, StyleSheet, StatusBar, TouchableOpacity, Image } from 'react-native';
 import { API_BASE_URL } from '../services/apiConfig';
 import { Picker } from '@react-native-picker/picker';
-
+import * as Font from 'expo-font';
+import GptImage from '../assets/images/sm_logo.png';
 const GptRecipe = () => {
+
+  const [isReady, setIsReady] = useState(false);
+
+  // 폰트 로딩을 위한 useEffect 훅
+  useEffect(() => {
+    // 비동기 로딩 함수
+    const loadFonts = async () => {
+      await Font.loadAsync({
+        NotoSans: require("../assets/fonts/NotoSans.ttf"),
+        Dongle: require("../assets/fonts/Dongle-Regular.ttf"),
+      });
+      setIsReady(true);
+    };
+    loadFonts(); // 함수 호출
+  }, []);
+
+
+
+
+  const [modalVisible, setModalVisible] = useState(false);
   const [gpt3Response, setGpt3Response] = useState(null);
   const REDIRECT_URI = API_BASE_URL + '/gptRecipe';
 
@@ -15,6 +36,9 @@ const GptRecipe = () => {
   const [servings, setServings] = useState('1'); // 인분 입력 상태
   const [retryCount, setRetryCount] = useState(0);
   const [loading, setloading] = useState(false); // waiting
+
+
+
 
   const fetchGPT3Response = async () => {
     if (loading) return; // 이미 로딩 중이면 아무 작업도 수행하지 않음
@@ -55,6 +79,7 @@ const GptRecipe = () => {
         }
         setMyRecipe(data.data);
         setrecipeTypeOK(true);
+        setModalVisible(true);
 
       } else {  // data.datatype == 'string'
         console.log(data.datatype);
@@ -81,22 +106,56 @@ const GptRecipe = () => {
       setloading(false); // 요청이 완료되거나 오류가 발생하면 로딩 상태를 false로 설정
     }
   };
-  // console.log("gptRecipe2")
+  // console.log("gptRecipe2")\
+
+  if (!isReady) {
+    return <View><Text>Loading...</Text></View>; // 폰트가 로딩되지 않았을 때 로딩 텍스트를 표시
+  }
+
+  const renderRecipeCards = () => (
+    <View style={styles.modalContent}>
+      {Object.keys(myrecipe).map((key) => (
+        <View key={key} style={styles.recipeCard}>
+          {renderRecipeCardContent(myrecipe[key])}
+        </View>
+      ))}
+    </View>
+  );
+  
+  // 새로운 레시피 컨텐츠 렌더링 함수
+  const renderRecipeCardContent = (recipe) => {
+    return (
+      <>
+        <Text style={styles.title2}>{recipe.요리명}</Text>
+        <Text style={styles.subtitle}>재료:</Text>
+        {recipe.재료.split('\n').map((ingredient, index) => (
+          <Text key={index} style={styles.ingredientItem}>- {ingredient}</Text>
+        ))}
+        <Text style={styles.subtitle}>추가 필요재료:</Text>
+        {recipe.추가필요재료.split('\n').map((ingredient, index) => (
+          <Text key={index} style={styles.ingredientItem}>- {ingredient}</Text>
+        ))}
+      </>
+    );
+  };
+
+
+
+
   return (
+
+
     <>
       <StatusBar hidden={true} />
       <ScrollView
-        contentContainerStyle={{
-          justifyContent: 'flex-start',
-          alignItems: 'center',
-          paddingTop: 40
-        }}
-        style={{ flex: 1 }}
+        contentContainerStyle={styles.scrollViewContent}
+        style={styles.scrollView}
       >
-        <Text>추천요리 숫자를 선택하세요</Text>
+        <Image source={GptImage} style={styles.GptImage} />
+        <Text style={styles.instructionText}>추천요리 숫자를 선택하세요</Text>
         <Picker
           selectedValue={cooks}
-          style={{ height: 50, width: 150, marginBottom: 20 }} // Picker 아래에 간격을 주기 위해 marginBottom 추가
+          style={styles.picker}// Picker 아래에 간격을 주기 위해 marginBottom 추가
           onValueChange={(itemValue, itemIndex) => setCooks(itemValue)}
         >
           <Picker.Item label="1" value="1" />
@@ -105,52 +164,44 @@ const GptRecipe = () => {
           <Picker.Item label="4" value="4" />
           <Picker.Item label="5" value="5" />
         </Picker>
-        <Text>요리 실력을 알려주세요.</Text>
+        <Text style={styles.instructionText}>요리 실력을 알려주세요.</Text>
         <Picker
           selectedValue={cookLevel}
-          style={{ height: 50, width: 150, marginBottom: 20 }} // Picker 아래에 간격을 주기 위해 marginBottom 추가
+          style={styles.picker} // Picker 아래에 간격을 주기 위해 marginBottom 추가
           onValueChange={(itemValue, itemIndex) => setCookLevel(itemValue)}
         >
           <Picker.Item label="초급" value="초급" />
           <Picker.Item label="중급" value="중급" />
           <Picker.Item label="고급" value="고급" />
         </Picker>
-        <Text>몇 인분을 만드실 건가요?</Text>
+        <Text style={styles.instructionText}>몇 인분을 만드실 건가요?</Text>
         <TextInput
           value={servings}
           onChangeText={setServings}
           placeholder="인분 입력"
           keyboardType="numeric" // 숫자 키보드 타입 설정
-          style={{ height: 50, width: 150, marginBottom: 20, borderWidth: 1, padding: 10 }}
+          style={styles.textInput}
         />
-        <Button
-          title="GPT-4 요리 추천"
-          onPress={fetchGPT3Response}
-          disabled={loading} // loading 상태에 따라 버튼 활성/비활성 상태를 결정
-        />
+        <TouchableOpacity style={styles.button} onPress={fetchGPT3Response} disabled={loading}>
+          <Text style={styles.buttonText}>AI 요리 추천</Text>
+        </TouchableOpacity>
 
         {/* 여기에 margin을 추가할 수도 있습니다. */}
         {gpt3Response && <Text style={{ marginTop: 20 }}>{`GPT-3 Response: ${gpt3Response}`}</Text>}
 
-        {recipeTypeOK &&
-          <View style={styles.container}>
-            {Object.keys(myrecipe).map((key) => (
-              <View key={key} style={styles.recipeCard}>
-                <Text style={styles.title2}>{myrecipe[key].요리명}</Text>
-                <Text style={styles.subtitle}>재료: {myrecipe[key].재료}</Text>
-                <Text style={styles.subtitle}>추가 필요 재료: {myrecipe[key].추가필요재료}</Text>
-                <View style={styles.nutritionInfo}>
-                  <Text style={styles.nutritionTitle}>영양 정보:</Text>
-                  {Object.keys(myrecipe[key].영양정보).map((nutrient) => (
-                    <Text key={nutrient} style={styles.nutritionText}>
-                      {nutrient}: {myrecipe[key].영양정보[nutrient]}
-                    </Text>
-                  ))}
-                </View>
-              </View>
-            ))}
-          </View>
-        }
+        <Modal
+          animationType="slide"
+          transparent={false}
+          visible={modalVisible}
+          onRequestClose={() => {
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <ScrollView style={styles.modalScrollView}>
+            {recipeTypeOK ? renderRecipeCards() : <Text>Loading or No Recipes...</Text>}
+          </ScrollView>
+          <Button title="닫기" onPress={() => setModalVisible(false)} />
+        </Modal>
 
       </ScrollView>
 
@@ -158,58 +209,87 @@ const GptRecipe = () => {
   );
 };
 
-
-// 스타일 정의
 const styles = StyleSheet.create({
+  // Adapted from LoginScreen, apply similar styling to GptRecipe components
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+
+  },
+  scrollViewContent: {
     justifyContent: 'flex-start',
     alignItems: 'center',
-    paddingTop: 50,
-    backgroundColor: '#f3f3f3', // 배경 색상
+    paddingTop: 40,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#34495e',
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'white',
+
   },
-  label: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#2c3e50',
-    alignSelf: 'flex-start',
-    marginLeft: 50,
-  },
-  inputContainer: {
-    borderWidth: 1,
-    borderColor: '#bdc3c7',
-    borderRadius: 10,
-    overflow: 'hidden',
-    marginBottom: 20,
+  instructionText: {
+    fontFamily: 'Dongle', // Assuming you've loaded this font as in LoginScreen
+    fontSize: 25,
+    color: '#030066',
+    marginBottom: 10, // Spacing for aesthetic appearance
   },
   picker: {
-    width: 300,
-    height: 200,
-  },
-  input: {
     height: 50,
-    width: 300,
-    borderWidth: 1,
-    borderColor: '#bdc3c7',
-    borderRadius: 10,
-    padding: 10,
-    backgroundColor: 'white',
+    width: 150,
     marginBottom: 20,
+    fontFamily: 'NotoSans', // Font consistency
+    justifyContent: 'center',
+
   },
-  response: {
-    marginTop: 20,
+  button: {
+    // Button styles from LoginScreen for consistency
+    backgroundColor: '#0054FF',
+    paddingHorizontal: 40,
+    paddingVertical: 12,
+    borderRadius: 20,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    marginBottom: 20, // Spacing after the button
+  },
+  buttonText: {
+    fontFamily: 'NotoSans',
+    fontSize: 12,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+
+  GptImage: {
+    width: 200, // 가로 크기
+    height: 200, // 세로 크기
+    resizeMode: 'contain', // 이미지가 가로 세로 비율을 유지하면서 컨테이너에 맞춰집니다.
+    borderRadius: 20, // 이미지의 모서리를 둥글게 합니다.
+    marginBottom: 32, // 이미지 아래쪽의 여백을 줍니다.
+    borderWidth: 1, // 이미지의 테두리 선의 두께를 정합니다.
+    borderColor: '#ddd', // 테두리 색상을 설정합니다.
+    shadowColor: '#000', // 그림자의 색상
+    shadowOffset: { width: 0, height: 1 }, // 그림자의 방향과 거리
+    shadowOpacity: 0.8, // 그림자의 투명도
+    shadowRadius: 2, // 그림자의 블러 정도
+  },
+  textInput: {
+    height: 50,
+    width: 150,
+    marginBottom: 20,
+    borderWidth: 1,
     padding: 10,
-    borderRadius: 10,
-    backgroundColor: '#ecf0f1',
-    color: '#2c3e50',
-    fontSize: 16,
-  },
+    borderRadius: 10, // 테두리를 둥글게 합니다.
+    borderColor: '#008299', // 테두리 색상을 검정으로 설정합니다.
+    backgroundColor: '#FFF', // 배경색을 흰색으로 설정합니다.
+    shadowColor: '#000', // 그림자의 색상을 검정으로 설정합니다.
+    shadowOffset: { width: 0, height: 2 }, // 그림자의 위치를 조정합니다.
+    shadowOpacity: 0.1, // 그림자의 투명도를 설정합니다.
+    shadowRadius: 3, // 그림자의 반경을 설정합니다.
+    elevation: 3, // 안드로이드에서 그림자 효과를 줍니다.
+  }
+  ,
   recipeCard: {
     flex: 1,
     marginBottom: 10,
@@ -244,6 +324,33 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
   },
+  modal: {
+    flex: 1,
+    justifyContent: 'center', // 모달의 내용을 세로축 중앙에 정렬
+    alignItems: 'center', // 모달의 내용을 가로축 중앙에 정렬
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20, // 모달의 모서리를 둥글게 합니다
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  ingredientItem: {
+    fontSize: 14,
+    marginLeft: 10, // 목록의 각 항목 앞에 왼쪽 여백을 줍니다
+  },
 });
+
+
 
 export default GptRecipe;
