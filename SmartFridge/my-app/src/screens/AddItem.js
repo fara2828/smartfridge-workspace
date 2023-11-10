@@ -111,8 +111,6 @@ const AddItem = ({ navigation }) => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.header}>아이템 추가</Text>
-
                 <Text style={styles.label}>구분</Text>
                 <View style={styles.row}>
                     <RadioButton value="냉장실" label="냉장실" selectedValue={division} onSelect={setDivision} />

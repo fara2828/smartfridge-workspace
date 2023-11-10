@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
   );
 };
 
-// StyleSheet information
+// StyleSheet info
 const styles = StyleSheet.create({
   container: {
     flex: 1,

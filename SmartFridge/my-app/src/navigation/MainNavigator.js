@@ -11,12 +11,14 @@ import MyFridge from '../screens/MyFridge';
 import KakaoLogin from '../screens/KakaoLoginScreen';
 import GptRecipe from '../screens/GptRecipe';
 import * as Font from 'expo-font';
+
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator(); // 탭 네비게이터 생성
 
 // 각 스크린을 포함하는 스택 네비게이터 
 function StackNavigator() {
-  const [isReady, setIsReady] = useState(false); 
+  const [isReady, setIsReady] = useState(false);
 
   // 폰트 로딩을 위한 useEffect 훅
   useEffect(() => {
@@ -34,46 +36,47 @@ function StackNavigator() {
   if (!isReady) {
     return <View><Text>Loading...</Text></View>; // 폰트가 로딩되지 않았을 때 로딩 텍스트를 표시
   }
+
   return (
     <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="MyPage" component={MyPage} options={{ 
-            title: '나의 냉장고', // 헤더 타이틀 변경
-            headerStyle: {
-              backgroundColor: '#0054FF', // 헤더 배경색 변경
-            },
-            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
-            headerTitleStyle: {
-              fontSize: 30,
-              fontFamily: 'Dongle'
-            },            
-          }}  />
+      <Stack.Screen name="MyPage" component={MyPage} options={{
+        title: '나의 냉장고', // 헤더 타이틀 변경
+        headerStyle: {
+          backgroundColor: '#0054FF', // 헤더 배경색 변경
+        },
+        headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+        headerTitleStyle: {
+          fontSize: 30,
+          fontFamily: 'Dongle'
+        },
+      }} />
       <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="AddItem" component={AddItem} options={{ 
-            title: '냉장고 재료 추가', // 헤더 타이틀 변경
-            headerStyle: {
-              backgroundColor: '#0054FF', // 헤더 배경색 변경
-            },
-            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
-            headerTitleStyle: {
-              fontSize: 30,
-              fontFamily: 'Dongle'
-            },            
-          }}  />
+      <Stack.Screen name="AddItem" component={AddItem} options={{
+        title: '냉장고 재료 추가', // 헤더 타이틀 변경
+        headerStyle: {
+          backgroundColor: '#0054FF', // 헤더 배경색 변경
+        },
+        headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+        headerTitleStyle: {
+          fontSize: 30,
+          fontFamily: 'Dongle'
+        },
+      }} />
       <Stack.Screen name="MyFridge" component={MyFridge} options={{ headerShown: false }} />
       <Stack.Screen name="KakaoLogin" component={KakaoLogin} options={{ headerShown: false }} />
-      <Stack.Screen name="GptRecipe" component={GptRecipe} options={{ 
-            title: '냉장고 요리 추천', // 헤더 타이틀 변경
-            headerStyle: {
-              backgroundColor: '#0054FF', // 헤더 배경색 변경
-            },
-            headerTintColor: '#fff', // 헤더 타이틀 색상 변경
-            headerTitleStyle: {
-              fontSize: 30,
-              fontFamily: 'Dongle'
-            },            
-          }} 
+      <Stack.Screen name="GptRecipe" component={GptRecipe} options={{
+        title: '냉장고 요리 추천', // 헤더 타이틀 변경
+        headerStyle: {
+          backgroundColor: '#0054FF', // 헤더 배경색 변경
+        },
+        headerTintColor: '#fff', // 헤더 타이틀 색상 변경
+        headerTitleStyle: {
+          fontSize: 30,
+          fontFamily: 'Dongle'
+        },
+      }}
       />
 
     </Stack.Navigator>
@@ -82,10 +85,11 @@ function StackNavigator() {
 }
 const MainNavigator = () => {
   return (
+    // Tab.Navigator 설정을 갱신하여, 각 탭 클릭 시 headerShown 값을 true로 설정합니다.
     <Tab.Navigator
-      screenOptions={{
+      screenOptions={({ route }) => ({
+        headerShown: true, // 여기를 true로 변경하면 모든 탭에서 헤더를 표시합니다.
         tabBarShowLabel: false,
-        headerShown: false,
         tabBarStyle: {
           position: 'absolute',
           elevation: 0,
@@ -94,8 +98,12 @@ const MainNavigator = () => {
           height: 60,
           ...styles.shadow,
         },
-      }}>
-      <Tab.Screen name="Home" component={StackNavigator} options={{
+      })
+      }
+    >
+
+
+      < Tab.Screen name="Home" component={StackNavigator} options={{
         headerShown: false,
         tabBarIcon: ({ focused }) => (
           <View
@@ -105,18 +113,18 @@ const MainNavigator = () => {
             }}>
             <Image
               style={{
-                width: 30,
-                height: 30,
+                width: 40,
+                height: 50,
                 tintColor: focused ? '#0000ff' : 'grey',
               }}
-              source={require('../assets/icons/fridge.jpg')}
+              source={require('../assets/icons/fridge.png')}
             />
           </View>
         ),
 
       }} />
       <Tab.Screen name="AddItem" component={AddItem} options={{
-        headerShown: false,
+        headerShown: true,
         tabBarIcon: ({ focused }) => (
           <View
             style={{
@@ -135,7 +143,7 @@ const MainNavigator = () => {
         ),
       }} />
       <Tab.Screen name="GptRecipe" component={GptRecipe} options={{
-        headerShown: false,
+        headerShown: true,
         tabBarIcon: ({ focused }) => (
           <View
             style={{
@@ -154,7 +162,7 @@ const MainNavigator = () => {
         )
       }} />
       <Tab.Screen name="MyPage" component={MyPage} options={{
-        headerShown: false,
+        headerShown: true,
         tabBarIcon: ({ focused }) => (
           <View
             style={{
@@ -174,8 +182,8 @@ const MainNavigator = () => {
       }} />
     </Tab.Navigator>
   );
-};
-
+}
+  
 export default MainNavigator;
 
 const styles = StyleSheet.create({

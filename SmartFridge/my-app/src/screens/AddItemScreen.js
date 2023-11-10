@@ -6,6 +6,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import fetch from 'node-fetch';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 
 // 공공데이터 접근
 // API 키
@@ -26,6 +27,12 @@ const RadioButton = ({ value, label, selectedValue, onSelect }) => (
 
 
 const AddItem = ({ navigation, route }) => {
+        // Function to show date in a more user-friendly format
+        const formatDate = (date) => {
+            // Converts date object to a readable string
+            return date.toISOString().split('T')[0];
+        };
+    
 
     console.log("addItem.js");
     console.log(route.params)
@@ -172,7 +179,6 @@ const AddItem = ({ navigation, route }) => {
     return (
         <ScrollView>
             <View style={styles.container}>
-                <Text style={styles.header}>아이템 추가</Text>
                 <Text style={styles.label}>냉장고 선택</Text>
                 <Picker
                     selectedValue={selectedFridge}
@@ -183,12 +189,14 @@ const AddItem = ({ navigation, route }) => {
                         <Picker.Item label={fridge} value={fridge} key={index} />
                     ))}
                 </Picker>
+                <View style={styles.divisionPickerContainer}>
 
-                <Text style={styles.label}>구분</Text>
-                <View style={styles.row}>
-                    <RadioButton value="냉장실" label="냉장실" selectedValue={division} onSelect={storageType} />
-                    <RadioButton value="냉동실" label="냉동실" selectedValue={division} onSelect={storageType} />
-                    <RadioButton value="실온" label="실온" selectedValue={division} onSelect={storageType} />
+                    <Text style={styles.label}>구분</Text>
+                    <View style={styles.row}>
+                        <RadioButton value="냉장실" label="냉장실" selectedValue={division} onSelect={storageType} />
+                        <RadioButton value="냉동실" label="냉동실" selectedValue={division} onSelect={storageType} />
+                        <RadioButton value="실온" label="실온" selectedValue={division} onSelect={storageType} />
+                    </View>
                 </View>
 
                 <Text style={styles.label}>카테고리</Text>
@@ -208,25 +216,39 @@ const AddItem = ({ navigation, route }) => {
                         <Picker.Item label={String(index + 1)} value={index + 1} key={index} />
                     ))}
                 </Picker>
+                <Text style={styles.label}>단위</Text>
+                <TextInput style={styles.input} onChangeText={setStore} value={store} />
 
-                {/* 구매일자 */}
-                <Text>구매일자</Text>
-                <TouchableOpacity onPress={() => setShowPurchasePicker(true)}>
-                    <Text>{purchaseDate.toLocaleDateString()}</Text>
-                </TouchableOpacity>
-                {showPurchasePicker && (
-                    <DateTimePicker mode="date" value={purchaseDate} onChange={onChangePurchaseDate} />
-                )}
+                <View style={styles.datePickerSection}>
+                    <Text style={styles.label}><FontAwesome5 name="calendar-check" size={15} color="black" /> 구매일자</Text>
+                    <TouchableOpacity style={styles.datePickerTouchable} onPress={() => setShowPurchasePicker(true)}>
+                        <Text style={styles.datePickerText}>{formatDate(purchaseDate)}</Text>
+                    </TouchableOpacity>
+                    {showPurchasePicker && (
+                        <DateTimePicker
+                            mode="date"
+                            display="default"
+                            value={purchaseDate}
+                            onChange={onChangePurchaseDate}
+                            style={styles.dateTimePicker}
+                        />
+                    )}
 
-
-                {/* 유통기한 */}
-                <Text>유통기한</Text>
-                <TouchableOpacity onPress={() => setShowExpiryPicker(true)}>
-                    <Text>{expiryDate.toLocaleDateString()}</Text>
-                </TouchableOpacity>
-                {showExpiryPicker && (
-                    <DateTimePicker mode="date" value={expiryDate} onChange={onChangeExpiryDate} />
-                )}
+                    <Text style={styles.label}><FontAwesome5 name="calendar-check" size={15} color="black" /> 유통기한</Text>
+                    
+                    <TouchableOpacity style={styles.datePickerTouchable} onPress={() => setShowExpiryPicker(true)}>
+                        <Text style={styles.datePickerText}>{formatDate(expiryDate)}</Text>                       
+                    </TouchableOpacity>
+                    {showExpiryPicker && (
+                        <DateTimePicker
+                            mode="date"
+                            display="default"
+                            value={expiryDate}
+                            onChange={onChangeExpiryDate}
+                            style={styles.dateTimePicker}
+                        />
+                    )}
+                </View>
                  <Text style={styles.label}>가격</Text>
                 <TextInput style={styles.input} onChangeText={setStore} value={store} />
                 <Text style={styles.label}>구매처</Text>
@@ -335,6 +357,12 @@ const styles = StyleSheet.create({
     saveButtonText: {
         color: 'white',
         fontSize: 18,
+    },
+    divisionOptions: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 10,
+        // Additional styles to balance the layout for "구분" categories
     },
 });
 

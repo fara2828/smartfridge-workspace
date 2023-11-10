@@ -29,7 +29,7 @@ const GptRecipe = () => {
   const REDIRECT_URI = API_BASE_URL + '/gptRecipe';
 
   const [myrecipe, setMyRecipe] = useState(null);
-  const [recipeTypeOK, setrecipeTypeOK] = useState(null);
+  const [recipeTypeCheck, setrecipeTypeCheck] = useState(null);
 
   const [cooks, setCooks] = useState("3"); // 기본값 설정
   const [cookLevel, setCookLevel] = useState("중급"); // 기본값 설정
@@ -38,13 +38,43 @@ const GptRecipe = () => {
   const [loading, setloading] = useState(false); // waiting
 
 
-
+  function checkProperties(currentDish, step) {
+    // 요리명이 있는지 확인
+    if (!currentDish.hasOwnProperty('요리명')) {
+      console.log(`요리${step}에 요리명 속성 누락`);
+      return false;
+    }
+  
+    // 영양정보가 모두 있는지 확인
+    const requiredNutrients = ['단백질', '지방', '탄수화물', '칼로리'];
+    if (!currentDish.hasOwnProperty('영양정보') || !requiredNutrients.every(nutrient => nutrient in currentDish.영양정보)) {
+      console.log(`요리${step}에 영양정보 속성 누락`);
+      return false;
+    }
+  
+    // 재료가 있는지 확인
+    if (!currentDish.hasOwnProperty('재료')) {
+      console.log(`요리${step}에 재료 속성 누락`);
+      return false;
+    }
+  
+    // 추가필요재료가 있는지 확인
+    if (!currentDish.hasOwnProperty('추가필요재료')) {
+      console.log(`요리${step}에 추가필요재료 속성 누락`);
+      return false;
+    }
+  
+    // 모든 검사를 통과했으면 모든 정보가 존재함을 의미
+    console.log(`요리${step} 정보 OK`);
+    return true;
+  }
+  
 
   const fetchGPT3Response = async () => {
     if (loading) return; // 이미 로딩 중이면 아무 작업도 수행하지 않음
     try {
       setloading(true);
-      setrecipeTypeOK(false);
+      setrecipeTypeCheck(false);
       const response = await fetch(REDIRECT_URI, {
         method: 'POST',
         headers: {
@@ -65,25 +95,24 @@ const GptRecipe = () => {
         var step;
         for (step = 1; step <= cooks; step++) { // step을 1부터 시작하여 5까지
           try {
-            // 요리명과 관련 정보는 템플릿 리터럴과 변수를 사용하여 동적으로 생성합니다.
             var currentDish = data.data[`요리${step}`]; // 요리1, 요리2, ... 요리5로 접근
+            if(!checkProperties(currentDish,step)){
+              throw new Error('gpt fail'); // 예외를 발생시켜 catch 블록으로 이동
+            }
 
-            console.log(`요리${step} 요리명 : ${currentDish.요리명}`);
-            console.log(`요리${step} 재료 : ${currentDish.재료}`);
-            console.log(`요리${step} 추가필요재료 : ${currentDish.추가필요재료}`);
           } catch (error) {
             // 오류 발생시 핸들링할 로직, 예를 들어 오류 로깅
-            console.error(`요리${step} 정보를 불러오는 데 실패했습니다: `, error);
-            throw new Error('원하는 결과가 아닙니다.'); // 예외를 발생시켜 catch 블록으로 이동
+            console.error(`요리${step} 정보 실패 : `, error);
+            throw new Error('gpt fail'); // 예외를 발생시켜 catch 블록으로 이동
           }
         }
         setMyRecipe(data.data);
-        setrecipeTypeOK(true);
+        setrecipeTypeCheck(true);
         setModalVisible(true);
 
       } else {  // data.datatype == 'string'
         console.log(data.datatype);
-        setrecipeTypeOK(false);
+        setrecipeTypeCheck(false);
         // 결과가 원하는 대로 오지 않았을 때
         throw new Error('원하는 결과가 아닙니다.'); // 예외를 발생시켜 catch 블록으로 이동
 
@@ -135,6 +164,13 @@ const GptRecipe = () => {
         {recipe.추가필요재료.split('\n').map((ingredient, index) => (
           <Text key={index} style={styles.ingredientItem}>- {ingredient}</Text>
         ))}
+        <View style={styles.ingredientItem}>
+          <Text style={styles.subtitle}>영양 정보</Text>
+          <Text style={styles.ingredientItem}>칼로리: {recipe.영양정보.칼로리}</Text>
+          <Text style={styles.ingredientItem}>단백질: {recipe.영양정보.단백질}</Text>
+          <Text style={styles.ingredientItem}>지방: {recipe.영양정보.지방}</Text>
+          <Text style={styles.ingredientItem}>탄수화물: {recipe.영양정보.탄수화물}</Text>
+        </View>
       </>
     );
   };
@@ -198,7 +234,7 @@ const GptRecipe = () => {
           }}
         >
           <ScrollView style={styles.modalScrollView}>
-            {recipeTypeOK ? renderRecipeCards() : <Text>Loading or No Recipes...</Text>}
+            {recipeTypeCheck ? renderRecipeCards() : <Text>Loading or No Recipes...</Text>}
           </ScrollView>
           <Button title="닫기" onPress={() => setModalVisible(false)} />
         </Modal>
@@ -290,29 +326,40 @@ const styles = StyleSheet.create({
     elevation: 3, // 안드로이드에서 그림자 효과를 줍니다.
   }
   ,
+  modalContent: {
+    padding: 20, // Or any other value that fits your design
+  },
+  
   recipeCard: {
-    flex: 1,
-    marginBottom: 10,
-    margin: 10,
-    padding: 15,
-    backgroundColor: '#f7f7f7',
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 330, // 가로 크기
+    height: 450, // 세로 크기
+    backgroundColor: 'white', // Or any card background color you prefer
+    borderRadius: 10, // Rounded corners for the card
+    padding: 15, // Padding inside the card for content
+    marginBottom: 10, // Space between cards
+    shadowColor: '#000', // Shadow color for card elevation effect
+    shadowOffset: {
+      width: 0,
+      height: 2, // Shadow direction (below the card)
+    },
+    shadowOpacity: 0.25, // Shadow visibility
+    shadowRadius: 3.84, // Shadow blurriness
+    elevation: 5, // Android elevation
   },
   title2: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
+    fontFamily: 'Dongle', // Your custom font here
+    fontSize: 32, // Adjust the size as needed
+    marginBottom: 5, // Space after the title
   },
-  subtitle: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 5,
-  },
+ // Style for other texts using NotoSans font
+ subtitle: {
+  fontFamily: 'NotoSans', // Your custom font for subtitles
+  fontSize: 18, // Adjust the size as needed
+  marginTop: 10, // Space before the subtitle
+  fontWeight: 'bold', // Make the subtitle bold
+},
   nutritionInfo: {
     marginTop: 10,
   },
@@ -346,9 +393,18 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   ingredientItem: {
-    fontSize: 14,
-    marginLeft: 10, // 목록의 각 항목 앞에 왼쪽 여백을 줍니다
+    fontFamily: 'NotoSans', // Your custom font for ingredient items
+    fontSize: 16, // Adjust the size as needed
+    letterSpacing: 0.5, // 글자 사이의 간격을 조정합니다. 원하는 대로 조절할 수 있습니다.
+    lineHeight: 30 ,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  modalScrollView: {
+    marginHorizontal: 20, // Add horizontal margin for the scroll view
+  },
+
+
 });
 
 
